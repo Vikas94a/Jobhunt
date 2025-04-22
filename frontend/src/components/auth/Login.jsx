@@ -6,13 +6,21 @@ import { Label } from "../ui/label.jsx";
 import { Input } from "../ui/input.jsx";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group.jsx";
 import { Button } from "../ui/button.jsx";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "@/context/authSlice";
+import { Cog, Contact } from "lucide-react";
 
-function Login() {
+function LogIn() {
   const [user, setUser] = useState({
     email: "",
     password: "",
     role: "",
   });
+
+  const { isLoggedIn } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -23,15 +31,32 @@ function Login() {
     try {
       const respond = await axios.post(
         `http://localhost:8000/api/v1/user/login`,
-        user
+        user,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
       );
+      const { user } = respond.data;
+
+      dispatch(login(user));
+      console.log(user);
+
       if (respond.status === 200 || respond.status === 201) {
         toast.success("Login sucessfully");
+
+        dispatch(login(respond.data.users));
+        localStorage.setItem("data", userData);
+
         setUser({
           email: "",
           password: "",
           role: "",
         });
+
+        navigate("/");
       }
     } catch (error) {
       if (error.response) {
@@ -104,4 +129,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LogIn;

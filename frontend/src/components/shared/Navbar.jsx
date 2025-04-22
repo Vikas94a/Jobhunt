@@ -5,10 +5,12 @@ import { Button } from "../ui/button.jsx";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar.jsx";
 import { LogOut, User2 } from "lucide-react";
 import { Link } from "react-router";
+import { login } from "../../context/AuthSlice.js";
+import { useDispatch, useSelector } from "react-redux";
 
 function Navbar() {
-  const user = false;
-
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  console.log(isLoggedIn)
   return (
     <div className="bg-white p-5">
       <div className="flex item-center justify-between mx-auto max-w-7xl h-16 ">
@@ -23,19 +25,18 @@ function Navbar() {
         <div className="flex items-center gap-3">
           <ul className="flex font-medium item-center gap-5">
             <Link to={"/"}>
-            <li className="cursor-pointer">Home</li>
+              <li className="cursor-pointer">Home</li>
             </Link>
 
             <Link to={"/jobs"}>
-            <li className="cursor-pointer">Jobs</li>
+              <li className="cursor-pointer">Jobs</li>
             </Link>
 
             <Link to={"/browse"}>
-            <li className="cursor-pointer">Browse</li>
+              <li className="cursor-pointer">Browse</li>
             </Link>
-            
           </ul>
-          {!user ? (
+          {!isLoggedIn ? (
             <div className="flex items-center gap-4">
               <Link to={"/login"}>
                 <Button variant="outline">Login</Button>
@@ -51,7 +52,7 @@ function Navbar() {
               <PopoverTrigger asChild>
                 <Avatar>
                   <AvatarImage
-                    className="h-6 rounded-full cursor-pointer"
+                    className=" rounded-full cursor-pointer"
                     src="https://github.com/shadcn.png"
                     alt="@shadcn"
                   />

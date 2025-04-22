@@ -173,7 +173,7 @@ function Jobs() {
   return (
     <div className="flex flex-row p-12">
       <div className="w-64 mr-8">
-        <h4 className="font-extrabold border-b p-3">Filter Jobs</h4>
+        <h4 className="font-extrabold border-b p-1">Filter Jobs</h4>
 
         <div className="mt-6">
           <h3 className="font-bold mb-3">Location</h3>
@@ -230,13 +230,13 @@ function Jobs() {
         </div>
       </div>
 
-      <div className="flex-1">
+      <div className="flex justify-center items-center gap-10 p-12 ">
         {jobs.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-gray-500">No jobs match your filter criteria</p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="flex  justify-center items-center flex-wrap gap-5 p-5 ">
             {jobs.map((job) => (
               <Jobcards
                 key={job.id}

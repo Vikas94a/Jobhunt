@@ -20,7 +20,7 @@ function AvatarImage({ className, ...props }) {
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
-      className={cn("aspect-auto size-0", className)}
+      className={cn("aspect-auto size-auto", className)}
       {...props}
     />
   );

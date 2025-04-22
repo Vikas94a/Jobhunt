@@ -1,5 +1,10 @@
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./context/store.js";
+
+
+//components
 import "./index.css";
 import App from "./App.jsx";
 import Errorview from "./views/Errorview.jsx";
@@ -8,6 +13,9 @@ import Signup from "./components/auth/Signup.jsx";
 import Home from "./views/Home.jsx";
 import Jobs from "./views/Jobs.jsx";
 import Browse from "./views/Browse.jsx";
+import StudentDashbord from "./views/Dashbord/student/StudentDashbord.jsx";
+import RecruiterDashbord from "./views/Dashbord/recruiter/RecruiterDashbord.jsx";
+
 
 const router = createBrowserRouter([
   {
@@ -33,12 +41,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/browse",
-        element: <Browse />,
+        element: <RecruiterDashbord />,
       },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
+  <Provider store={store}>
   <RouterProvider router={router} />
+  </Provider>
 );
