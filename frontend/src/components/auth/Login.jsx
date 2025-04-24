@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
@@ -8,8 +8,7 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group.jsx";
 import { Button } from "../ui/button.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "@/context/authSlice";
-import { Cog, Contact } from "lucide-react";
+import { login } from "../../context/AuthSlice.js";
 
 function LogIn() {
   const [user, setUser] = useState({
@@ -18,7 +17,9 @@ function LogIn() {
     role: "",
   });
 
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  // const { isLoggedIn } = useDispatch((state) => state.auth);
+
+  // console.log(isLoggedIn)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -28,27 +29,22 @@ function LogIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("first");
     try {
       const respond = await axios.post(
         `http://localhost:8000/api/v1/user/login`,
         user,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
           withCredentials: true,
         }
       );
-      const { user } = respond.data;
+      const userData = respond.data.user;
+      console.log(userData)
 
-      dispatch(login(user));
-      console.log(user);
-
+      dispatch(login(userData));
+      console.log(respond.data.user);
       if (respond.status === 200 || respond.status === 201) {
         toast.success("Login sucessfully");
-
-        dispatch(login(respond.data.users));
-        localStorage.setItem("data", userData);
 
         setUser({
           email: "",
@@ -57,10 +53,12 @@ function LogIn() {
         });
 
         navigate("/");
+        console.log("Form submited");
       }
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.message || "Signup failed");
+        console.log("error");
       } else {
         toast.error("Network error or server is down");
       }

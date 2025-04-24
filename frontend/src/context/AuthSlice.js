@@ -1,4 +1,3 @@
-import React from "react";
 import { createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({
@@ -9,18 +8,14 @@ const authSlice = createSlice({
   },
   reducers: {
     login: (state, action) => {
-      (state.user = action.payload), 
-      (state.isLoggedIn = true);
-
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("user", JSON.stringify(action.payload));
-      console.log(action.payload);
+      state.user = action.payload;
+      state.isLoggedIn = true;
     },
     logout: (state) => {
-      (state.user = null), (state.isLoggedIn = false);
+      state.user = null; state.isLoggedIn = false;
     },
   },
 });
 
-export const { login, logOut } = authSlice.actions;
+export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;

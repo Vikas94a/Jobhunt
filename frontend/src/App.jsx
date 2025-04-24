@@ -7,16 +7,16 @@ import { useDispatch } from "react-redux";
 import { login } from "./context/AuthSlice.js";
 
 function App() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
+  // useEffect(() => {
+  //   const user = localStorage.getItem("user");
+  //   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-    if (user&&isLoggedIn === "true") {
-      dispatch(login(JSON.parse(user)));
-    }
-  }, []);
+  //   if (user&&isLoggedIn === "true") {
+  //     dispatch(login(JSON.parse(user)));
+  //   }
+  // }, []);
 
   return (
     <div>

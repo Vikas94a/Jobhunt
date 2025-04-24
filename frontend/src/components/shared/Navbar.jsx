@@ -4,13 +4,22 @@ import { PopoverTrigger } from "@radix-ui/react-popover";
 import { Button } from "../ui/button.jsx";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar.jsx";
 import { LogOut, User2 } from "lucide-react";
-import { Link } from "react-router";
-import { login } from "../../context/AuthSlice.js";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router";
+import { login, logout } from "../../context/AuthSlice.js";
+import { useSelector, useDispatch } from "react-redux";
 
 function Navbar() {
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
-  console.log(isLoggedIn)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogOut = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
   return (
     <div className="bg-white p-5">
       <div className="flex item-center justify-between mx-auto max-w-7xl h-16 ">
@@ -68,7 +77,7 @@ function Navbar() {
                     />
                   </Avatar>
                   <div>
-                    <h4 className="font-bold ">Vikas Sharma</h4>
+                    <h4 className="font-bold ">{user.fullname}</h4>
                     <p className="text-sm  text-muted-foreground">
                       Lorem ipsum dolor sit, amet.
                     </p>
@@ -77,14 +86,17 @@ function Navbar() {
                 <div className="flex flex-col my-2 text-gray-600">
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <User2 />
-                    <Button className="border-none" variant="link">
-                      {" "}
-                      View Profile
-                    </Button>
+                    <Link to={"/viewprofile"}>
+                      <Button className="border-none" variant="link">
+                        View Profile
+                      </Button>
+                    </Link>
                   </div>
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut />
-                    <Button variant="link"> Logout</Button>
+                    <Button onClick={handleLogOut} variant="link">
+                      Logout
+                    </Button>
                   </div>
                 </div>
               </PopoverContent>

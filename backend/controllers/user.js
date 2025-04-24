@@ -43,7 +43,7 @@ export const register = async (req, res) => {
 export const logIn = async (req, res) => {
   try {
     const { email, password, role } = req.body;
-    if (!email || !password || !role) {
+    if (!email || !password) {
       return res.status(400).json({
         message: "Something is missing",
         success: false,
@@ -88,6 +88,7 @@ export const logIn = async (req, res) => {
     user = {
       id: user._id,
       fullname: user.fullname,
+      email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
       profile: user.profile,
@@ -126,12 +127,12 @@ export const updateProfile = async (req, res) => {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
 
-    // if (!fullname || !email || !phoneNumber || !skills || !bio) {
-    //   return res.status(400).json({
-    //     message: "Something is missing",
-    //     success: false,
-    //   });
-    // }
+    if (!fullname || !email || !phoneNumber || !skills || !bio) {
+      return res.status(400).json({
+        message: "Something is missing",
+        success: false,
+      });
+    }
     // Cloudinary
 
     let skillsArray;
