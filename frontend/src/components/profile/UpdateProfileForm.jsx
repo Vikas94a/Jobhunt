@@ -1,132 +1,131 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { login } from "../../context/AuthSlice.js";
+// import { login } from "../../context/AuthSlice.js";
 import { useSelector, useDispatch } from "react-redux";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label.jsx";
+import { Input } from "../ui/input.jsx";
+import { Label } from "@radix-ui/react-label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog.jsx";
 import { Button } from "../ui/button.jsx";
-import { toast } from "sonner";
-import { use } from "react";
+import { Loader2, Target } from "lucide-react";
 
-function UpdateProfileForm() {
-  const dispatch = useDispatch();
+function UpdateProfileForm({ open, setOpen }) {
+  const [loading, setLoading] = useState(false);
 
-  const [updatedDetails, setUpdatedDetails] = useState({
-    fullname: "",
-    email: "",
-    phoneNumber: "",
-    bio: "",
-    skills: "",
+  const { user } = useSelector((store) => store.auth);
+  const [input, setInput] = useState({
+    fullname: user?.fullname,
+    email: user?.email,
+    phoneNumber: user?.phoneNumber,
+    bio: user?.profile?.bio,
+    Skills: user?.profile?.skills.map((skill) => skill),
   });
-  const user = useSelector((state) => state.auth.user);
-  console.log(user);
-  function handleUpdateDetails(e) {
-    setUpdatedDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
 
-  async function handleSubmit() {
-   
-    try {
-      const respond = await axios.put(
-        `http://localhost:8000/api/v1/user/profile/update`,
-        updatedDetails,
-        {
-          withCredentials: true,
-        }
-      );
+  const fileHandler = (e) => {
+    const file = e.target.file?.[0];
+    setInput({ ...input, file });
+  };
 
-      if (respond.status === 200) {
-        toast.success("Profile updated Successfully");
-        setUpdatedDetails({
-          fullname: "",
-          email: "",
-          phoneNumber: "",
-          bio: "",
-          skills: "",
-        });
-      }
-    } catch (error) {
-      if (error.respond) {
-        toast.error(error.respond.message || "Something went wront");
-      } else {
-        toast.error("Network error or server is down");
-      }
-    }
-  }
-  console.log(updatedDetails);
+  const handleChange = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdateProfile = (e) => {
+    e.preventDefault();
+    console.log(input);
+  };
+
   return (
-    <div className="bg-blue">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col p-10 inset-0 bg-white gap-2 max-w-7xl rounded-2xl shadow-2xl"
-      >
-        <h2>Update Profile</h2>
-        <div>
-          <Label> Name </Label>
-          <Input
-            className="border-black mt-2"
-            type="fullname"
-            name="fullname"
-            value={updatedDetails.name}
-            placeholder="Enter your full name"
-            onChange={handleUpdateDetails}
-            required
-          />
-        </div>
-        <div>
-          <Label>Email</Label>
-          <Input
-            className="border-black mt-2"
-            type="email"
-            name="email"
-            value={updatedDetails.email}
-            placeholder="name@xyz.com"
-            onChange={handleUpdateDetails}
-            required
-          />
-        </div>
-        <div>
-          <Label>phoneNumber</Label>
-          <Input
-            className="border-black mt-2"
-            type="phoneNumber"
-            name="phoneNumber"
-            value={updatedDetails.phoneNumber}
-            placeholder="937403830"
-            onChange={handleUpdateDetails}
-          />
-        </div>
-        <div>
-          <Label>Bio</Label>
-          <Input
-            className="border-black mt-2"
-            type="bio"
-            name="bio"
-            value={updatedDetails.bio}
-            placeholder="Write something about you"
-            onChange={handleUpdateDetails}
-          />
-        </div>
-        <div>
-          <Label>Skills</Label>
-          <Input
-            className="border-black mt-2 "
-            type="skills"
-            name="skills"
-            value={updatedDetails.skills}
-            placeholder="Html, CSS, Js"
-            onChange={handleUpdateDetails}
-            required
-          />
-        </div>
-        <div>
-          <Label>Resume</Label>
-          <Input type="file" />
-        </div>
-        <div className="flex">
-          <Button type="submit">Update Profile</Button>
-        </div>
-      </form>
+    <div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Update Profile</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateProfile}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-1">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  name="fullname"
+                  id="name"
+                  value={input.fullname}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-1">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  name="email"
+                  id="email"
+                  value={input.email}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-1">
+                <Label htmlFor="number">Number</Label>
+                <Input
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  value={input.phoneNumber}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-1">
+                <Label htmlFor="Bio">Bio</Label>
+                <Input
+                  name="Bio"
+                  id="Bio"
+                  value={input.bio}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-1">
+                <Label htmlFor="Skills">Skills</Label>
+                <Input
+                  name="Skills"
+                  id="Skills"
+                  value={input.Skills}
+                  onChange={handleChange}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-1">
+                <Label htmlFor="resume">Resume</Label>
+                <Input
+                  type="file"
+                  id="file"
+                  name="file"
+                  onChange={fileHandler}
+                  accept="application/pdf"
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <div>
+              {loading ? (
+                <Button className="w-full my-4">
+                  <Loader2 className="mr-2 h-4 w-4  animate-spin">
+                    Please Wait
+                  </Loader2>
+                </Button>
+              ) : (
+                <Button type="submit">Update</Button>
+              )}
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

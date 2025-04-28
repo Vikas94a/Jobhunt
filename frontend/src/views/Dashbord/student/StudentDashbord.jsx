@@ -1,10 +1,7 @@
-import axios from 'axios'
-import { useState } from 'react';
+import axios from "axios";
+import { useState } from "react";
 import AppliedJob from "./AppliedJob.jsx";
-import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../../../context/AuthSlice.js";
-import UpdateProfileForm from '../../../components/profile/UpdateProfileForm.jsx';
-
+import UpdateProfileForm from "../../../components/profile/UpdateProfileForm.jsx";
 
 import { Button } from "../../../components/ui/button.jsx";
 import { Pen, Mail, Contact } from "lucide-react";
@@ -15,17 +12,22 @@ import {
 } from "../../../components/ui/avatar.jsx";
 import { Badge } from "../../../components/ui/badge.jsx";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../../components/ui/dialog.jsx";
+
 function StudentDashbord() {
-const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
-function handleUpdateform(){
-  setIsUpdateFormOpen(true)
-}
+  console.log(Dialog);
+  // const user = useSelector((state) => state.auth.user);
 
-
-
-const user = useSelector((state)=>state.auth.user)
-
+  const skills = ["HTML", "CSS", "JS"];
 
   return (
     <div>
@@ -40,41 +42,41 @@ const user = useSelector((state)=>state.auth.user)
               />
             </Avatar>
             <div>
-              <h1 className="font-bold">{user.fullname  }</h1>
+              <h1 className="font-bold">Viks</h1>
               <p className="text-zinc-400">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
                 natus aspernatur nesciunt alias temporibus at omnis perspiciatis
                 neque nisi odit?
               </p>
             </div>
-            <Button onClick={handleUpdateform} className="bg-white text-black border-1  hover:bg-blue-200">
+            <Button
+              onClick={() => setOpen(true)}
+              className="bg-white text-black border-1  hover:bg-blue-200"
+            >
               <Pen />
             </Button>
-            <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>{isUpdateFormOpen && <UpdateProfileForm/>}</div>
           </div>
           <div className="flex flex-col gap-2">
             <a className="flex gap-2" href="mailto:Vikas@gmail.com">
               <Mail />
-           {user.email}
+              Vikas@gmail.com
             </a>
             <a className="flex gap-2" href="tel:94712904">
               <Contact />
-              {user.phoneNumber}
+              94712904
             </a>
           </div>
-          <div>
-            <span className="ml-2">Skills</span>
-            <div className="flex gap-3 ">
-              <Badge className="bg-black text-white" variant="Secondary">
-                HTML
-              </Badge>
-              <Badge className="bg-black text-white" variant="Secondary">
-                HTML
-              </Badge>
-              <Badge className="bg-black text-white" variant="Secondary">
-                HTML
-              </Badge>
-            </div>
+          <span className="ml-2">Skills</span>
+          <div className="flex">
+            {skills.map((skill, index) => {
+              return (
+                <div key={index} className="flex ">
+                  <Badge className="bg-black text-white" variant="Secondary">
+                    {skill}
+                  </Badge>
+                </div>
+              );
+            })}
           </div>
 
           <div>
@@ -89,11 +91,11 @@ const user = useSelector((state)=>state.auth.user)
       <div className="p-20">
         <h1 className="font-bold text-xl">Applied Jobs</h1>
         <div className="border mt-4">
-        <AppliedJob />
-
+          <AppliedJob />
         </div>
-        
       </div>
+
+      <UpdateProfileForm open={open} setOpen={setOpen} />
     </div>
   );
 }

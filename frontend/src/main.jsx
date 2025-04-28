@@ -43,21 +43,22 @@ const router = createBrowserRouter([
       {
         path: "/browse",
         element: <Browse />,
-      },{
-        path:"/viewprofile",
-        element:<StudentDashbord/>
-      }
+      },
+      {
+        path: "/viewprofile",
+        element: <StudentDashbord />,
+      },
     ],
   },
 ]);
 
-const persistor = persistStore(store);
+// const persistor = persistStore(store);
 
-console.log(persistor);
+// console.log(persistor);
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <RouterProvider router={router} />
-    </PersistGate>
+    {/* <PersistGate loading={null} persistor={persistor}> */}
+    <RouterProvider router={router} />
+    {/* </PersistGate> */}
   </Provider>
 );

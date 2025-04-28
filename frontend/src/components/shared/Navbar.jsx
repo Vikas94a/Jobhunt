@@ -5,20 +5,22 @@ import { Button } from "../ui/button.jsx";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar.jsx";
 import { LogOut, User2 } from "lucide-react";
 import { Link, useNavigate } from "react-router";
-import { login, logout } from "../../context/AuthSlice.js";
+import store from "../../context/store.js";
 import { useSelector, useDispatch } from "react-redux";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((store) => store.auth);
 
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const user = useSelector((state) => state.auth.user);
 
-  const handleLogOut = () => {
-    dispatch(logout());
-    navigate("/");
-  };
+  // const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  // const user = useSelector((state) => state.auth.user);
+
+  // const handleLogOut = () => {
+  //   dispatch(logout());
+  //   navigate("/");
+  // };
 
   return (
     <div className="bg-white p-5">
@@ -45,7 +47,7 @@ function Navbar() {
               <li className="cursor-pointer">Browse</li>
             </Link>
           </ul>
-          {!isLoggedIn ? (
+          {!user ? (
             <div className="flex items-center gap-4">
               <Link to={"/login"}>
                 <Button variant="outline">Login</Button>
@@ -94,9 +96,7 @@ function Navbar() {
                   </div>
                   <div className="flex w-fit items-center gap-2 cursor-pointer">
                     <LogOut />
-                    <Button onClick={handleLogOut} variant="link">
-                      Logout
-                    </Button>
+                    <Button variant="link">Logout</Button>
                   </div>
                 </div>
               </PopoverContent>

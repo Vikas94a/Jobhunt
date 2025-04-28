@@ -8,14 +8,19 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group.jsx";
 import { Button } from "../ui/button.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../context/AuthSlice.js";
+import { setUser, setLoading } from "../../context/AuthSlice.js";
+import { Loader2 } from "lucide-react";
 
 function LogIn() {
-  const [user, setUser] = useState({
+  const [users, setUsers] = useState({
     email: "",
     password: "",
     role: "",
   });
+
+  const { loading } = useSelector((store) => store.auth);
+
+  console.log(loading);
 
   // const { isLoggedIn } = useDispatch((state) => state.auth);
 
@@ -24,36 +29,35 @@ function LogIn() {
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
-    setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setUsers((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("first");
+    dispatch(setLoading(true));
     try {
       const respond = await axios.post(
         `http://localhost:8000/api/v1/user/login`,
-        user,
+        users,
         {
           withCredentials: true,
         }
       );
       const userData = respond.data.user;
-      console.log(userData)
+      console.log(userData);
 
-      dispatch(login(userData));
+      dispatch(setUser(userData));
       console.log(respond.data.user);
       if (respond.status === 200 || respond.status === 201) {
         toast.success("Login sucessfully");
 
-        setUser({
+        setUsers({
           email: "",
           password: "",
           role: "",
         });
 
         navigate("/");
-        console.log("Form submited");
       }
     } catch (error) {
       if (error.response) {
@@ -62,6 +66,8 @@ function LogIn() {
       } else {
         toast.error("Network error or server is down");
       }
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
@@ -80,7 +86,7 @@ function LogIn() {
             type="email"
             name="email"
             placeholder="David@gmail.com"
-            value={user.email}
+            value={users.email}
             onChange={handleChange}
           />
         </div>
@@ -91,7 +97,7 @@ function LogIn() {
             type="password"
             name="password"
             placeholder="Xyz@gmail.com"
-            value={user.password}
+            value={users.password}
             onChange={handleChange}
           />
         </div>
@@ -102,7 +108,7 @@ function LogIn() {
                 type="radio"
                 value="student"
                 name="role"
-                checked={user.role === "student"}
+                checked={users.role === "student"}
                 onChange={handleChange}
               />
               <Label htmlFor="option-one">Student </Label>
@@ -112,7 +118,7 @@ function LogIn() {
                 type="radio"
                 value="recruiter"
                 name="role"
-                checked={user.role === "recruiter"}
+                checked={users.role === "recruiter"}
                 onChange={handleChange}
               />
               <Label htmlFor="option-two">Recruiter</Label>
@@ -120,7 +126,20 @@ function LogIn() {
           </RadioGroup>
         </div>
         <div className="flex items-center justify-center">
-          <Button type="submit">Login</Button>
+          {loading ? (
+            <Button
+              disabled
+              className="w-full my-4 flex items-center justify-center text-white"
+            >
+              <Loader2 className="mr-2 h-4 w-4  animate-spin">
+                Please Wait
+              </Loader2>
+            </Button>
+          ) : (
+            <Button className="w-full my-4" type="submit">
+              Login
+            </Button>
+          )}
         </div>
       </form>
     </div>

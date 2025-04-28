@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import Footer from "./components/shared/Footer";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "./context/AuthSlice.js";
+// import { login } from "./context/AuthSlice.js";
 
 function App() {
   // const dispatch = useDispatch();

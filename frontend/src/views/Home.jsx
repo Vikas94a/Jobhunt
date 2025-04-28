@@ -10,6 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import store from "../context/store";
 
 const jobData = [
   {
@@ -69,6 +70,7 @@ const jobData = [
 ];
 
 function Home() {
+  console.log(store)
   return (
     <div>
       {/* heading and title of page */}

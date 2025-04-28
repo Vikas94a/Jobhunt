@@ -13,29 +13,28 @@ import {
 import storage from "redux-persist/lib/storage";
 import { combineReducers } from "@reduxjs/toolkit";
 
-
-const persistConfig = {
-  key: "root",
-  storage,
-};
+// const persistConfig = {
+//   key: "root",
+// };
 
 const rootReducer = combineReducers({
-    auth: authSlice,
-  });
-  
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }), 
+  auth: authSlice,
 });
 
+const store = configureStore({
+  reducer: rootReducer,
+});
 
+// const persistedReducer = persistReducer(rootReducer);
+
+// const store = configureStore({
+//   reducer: persistedReducer,
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware({
+//       serializableCheck: {
+//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+//       },
+//     }),
+// });
 
 export default store;
