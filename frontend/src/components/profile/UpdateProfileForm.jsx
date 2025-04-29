@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import { login } from "../../context/AuthSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 import { Input } from "../ui/input.jsx";
 import { Label } from "@radix-ui/react-label";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog.jsx";
 import { Button } from "../ui/button.jsx";
-import { Loader2, Target } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { setUser, setLoading } from "../../context/AuthSlice.js";
 
 function UpdateProfileForm({ open, setOpen }) {
-  const [loading, setLoading] = useState(false);
+  const { loading } = useSelector((state) => state.auth);
+  console.log(loading);
+  const dispatch = useDispatch();
 
   const { user } = useSelector((store) => store.auth);
   const [input, setInput] = useState({
@@ -32,13 +33,67 @@ function UpdateProfileForm({ open, setOpen }) {
     setInput({ ...input, file });
   };
 
+  console.log("🔥 handleUpdateProfile fired!", input);
   const handleChange = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const handleUpdateProfile = (e) => {
+  console.log(input.fullname);
+
+  const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    console.log(input);
+    // Validate required fields
+    if (!input.fullname || !input.email || !input.phoneNumber) {
+      toast.error("Required fields cannot be empty");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("fullname", input.fullname || "");
+    formData.append("email", input.email || "");
+    formData.append("phoneNumber", input.phoneNumber || "");
+    formData.append("bio", input.bio || "");
+    formData.append("skills", input.Skills || "");
+    if (file) {
+      formData.append("file", input.file);
+    }
+
+    console.log(formData);
+    dispatch(setLoading(true));
+    try {
+      const respond = await axios.put(
+        `http://localhost:8000/api/v1/user/profile/update`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+          timeout: 5000,
+        }
+      );
+
+      if (respond) {
+        toast.success(respond.data.message);
+        dispatch(setUser(respond.data.user));
+        setOpen(false);
+      }
+
+      setInput({
+        fullname: "",
+        email: "",
+        phoneNumber: "",
+        bio: "",
+        Skills: "",
+      });
+    } catch (error) {
+      if (error.response) {
+        console.log("123");
+        toast.error(error.response.data.message || "Something went wrong");
+      } else {
+        toast.error("Network error or server is down");
+      }
+    } finally {
+      console.log("tset 5");
+      dispatch(setLoading(false));
+    }
   };
 
   return (
@@ -51,10 +106,10 @@ function UpdateProfileForm({ open, setOpen }) {
           <form onSubmit={handleUpdateProfile}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-1">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="fullname">Full Name</Label>
                 <Input
                   name="fullname"
-                  id="name"
+                  id="fullname"
                   value={input.fullname}
                   onChange={handleChange}
                   className="col-span-3"
@@ -81,10 +136,10 @@ function UpdateProfileForm({ open, setOpen }) {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-1">
-                <Label htmlFor="Bio">Bio</Label>
+                <Label htmlFor="bio">Bio</Label>
                 <Input
-                  name="Bio"
-                  id="Bio"
+                  name="bio"
+                  id="bio"
                   value={input.bio}
                   onChange={handleChange}
                   className="col-span-3"

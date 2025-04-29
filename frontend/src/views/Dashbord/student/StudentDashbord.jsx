@@ -2,6 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 import AppliedJob from "./AppliedJob.jsx";
 import UpdateProfileForm from "../../../components/profile/UpdateProfileForm.jsx";
+import { useSelector } from "react-redux";
+import { setUser, setLoading } from "../../../context/AuthSlice.js";
 
 import { Button } from "../../../components/ui/button.jsx";
 import { Pen, Mail, Contact } from "lucide-react";
@@ -12,20 +14,11 @@ import {
 } from "../../../components/ui/avatar.jsx";
 import { Badge } from "../../../components/ui/badge.jsx";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../../components/ui/dialog.jsx";
-
 function StudentDashbord() {
   const [open, setOpen] = useState(false);
 
-  console.log(Dialog);
-  // const user = useSelector((state) => state.auth.user);
+  const { user } = useSelector((state) => state.auth);
+  console.log(user);
 
   const skills = ["HTML", "CSS", "JS"];
 
@@ -42,11 +35,9 @@ function StudentDashbord() {
               />
             </Avatar>
             <div>
-              <h1 className="font-bold">Viks</h1>
+              <h1 className="font-bold">{user?.fullname}</h1>
               <p className="text-zinc-400">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius
-                natus aspernatur nesciunt alias temporibus at omnis perspiciatis
-                neque nisi odit?
+               {user?.bio}
               </p>
             </div>
             <Button
@@ -59,11 +50,11 @@ function StudentDashbord() {
           <div className="flex flex-col gap-2">
             <a className="flex gap-2" href="mailto:Vikas@gmail.com">
               <Mail />
-              Vikas@gmail.com
+           {user?.email}
             </a>
             <a className="flex gap-2" href="tel:94712904">
               <Contact />
-              94712904
+              {user?.phoneNumber}
             </a>
           </div>
           <span className="ml-2">Skills</span>

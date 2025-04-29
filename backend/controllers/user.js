@@ -126,6 +126,8 @@ export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, bio, skills } = req.body;
     const file = req.file;
+    console.log(fullname);
+    console.log(req.body)
 
     if (!fullname || !email || !phoneNumber || !skills || !bio) {
       return res.status(400).json({
